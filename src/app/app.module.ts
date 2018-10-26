@@ -13,6 +13,8 @@ import { MisconductModule } from './misconduct/misconduct.module';
 import { InjuriesModule } from './injuries/injuries.module';
 import { environment } from '../environments/environment';
 import { AuthenticationModule } from './authentication/authentication.module';
+import { MainNavigationComponent } from './navigation/main-navigation.component';
+import { NavigationModule } from './navigation/navigation.module';
 
 @NgModule({
   declarations: [
@@ -25,6 +27,7 @@ import { AuthenticationModule } from './authentication/authentication.module';
     AngularFireAuthModule,
     NgbModule,
     CoreModule,
+    NavigationModule,
     AuthenticationModule,
     GamesModule,
     GoalsModule,

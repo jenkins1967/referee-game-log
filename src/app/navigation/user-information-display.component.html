@@ -1,0 +1,6 @@
+<div *ngIf="currentUser">
+  <a [routerLink]="['user']">
+    <img [src]="currentUser.image">
+    <span class="pl-1">{{currentUser.name}}</span>
+  </a>
+</div>

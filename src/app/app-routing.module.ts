@@ -10,8 +10,8 @@ import { UserResolver } from './authentication/user-resolver';
 
 const routes: Routes = [
   {path:'home', component:LandingComponent},
-  { path: 'login', component: LoginComponent, canActivate: [AuthenticationGuard] },
-  { path: 'register', component: RegisterComponent, canActivate: [AuthenticationGuard] },
+  { path: 'login', component: LoginComponent },
+  { path: 'register', component: RegisterComponent },
   { path: 'user', component: UserComponent,  resolve: { data: UserResolver}},
   {path: '', redirectTo: '/home', pathMatch:'full'},  
   { path: '**', component: PageNotFoundComponent }
