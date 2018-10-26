@@ -1,32 +1,19 @@
 import { Injectable } from '@angular/core';
 import { Resolve, ActivatedRouteSnapshot, Router, RouterStateSnapshot } from "@angular/router";
 import { UserService } from './services/user.service';
-import { FirebaseUserModel } from './models/firebase-user-model';
+import { User } from '../core/models/user';
 
 @Injectable()
-export class UserResolver implements Resolve<FirebaseUserModel> {
+export class UserResolver implements Resolve<User> {
 
   constructor(public userService: UserService, private router: Router) { }
 
-  resolve(route: ActivatedRouteSnapshot, state:RouterStateSnapshot) : Promise<FirebaseUserModel> {
+  resolve(route: ActivatedRouteSnapshot, state:RouterStateSnapshot) : Promise<User> {
 
-    let user = new FirebaseUserModel();
-
-    return new Promise((resolve, reject) => {
+        return new Promise((resolve, reject) => {
       this.userService.getCurrentUser()
-      .then(res => {
-        if(res.providerData[0].providerId == 'password'){
-          user.image = 'http://dsi-vd.github.io/patternlab-vd/images/fpo_avatar.png';
-          user.name = res.displayName;
-          user.provider = res.providerData[0].providerId;
-          return resolve(user);
-        }
-        else{
-          user.image = res.photoURL;
-          user.name = res.displayName;
-          user.provider = res.providerData[0].providerId;
-          return resolve(user);
-        }
+      .then(res => {         
+        return resolve(User.fromAuthUser(res as firebase.User));
       }, err => {
         this.router.navigate(['/login']);
         return reject(err);

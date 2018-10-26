@@ -20,8 +20,8 @@ import { AuthenticationModule } from './authentication/authentication.module';
   ],
   imports: [
     BrowserModule,
-    AngularFireModule.initializeApp(environment.firebase),
-    AngularFirestoreModule,
+    AngularFireModule.initializeApp(environment.firebase),    
+    AngularFirestoreModule, // imports firebase/firestore, only needed for database features
     AngularFireAuthModule,
     NgbModule,
     CoreModule,

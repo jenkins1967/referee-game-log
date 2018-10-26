@@ -15,6 +15,7 @@ export class AuthenticationService {
   doFacebookLogin(){
     return new Promise<any>((resolve, reject) => {
       let provider = new firebase.auth.FacebookAuthProvider();      
+      provider.addScope('email');
       this.afAuth.auth
       .signInWithPopup(provider)
       .then((user) => {
@@ -29,9 +30,10 @@ export class AuthenticationService {
   doTwitterLogin(){    
     return new Promise<any>((resolve, reject) => {
       let provider = new firebase.auth.TwitterAuthProvider();
+      
       this.afAuth.auth
       .signInWithPopup(provider)
-      .then((user) => {
+      .then((user:firebase.auth.UserCredential) => {
         resolve(user);
       }, err => {
         console.log(err);

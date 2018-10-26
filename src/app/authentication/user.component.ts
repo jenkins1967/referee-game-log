@@ -2,9 +2,9 @@ import { Component, OnInit } from '@angular/core';
 import { ActivatedRoute } from '@angular/router';
 import { Location } from '@angular/common';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
-import { FirebaseUserModel } from './models/firebase-user-model';
 import { UserService } from './services/user.service';
 import { AuthenticationService } from './services/authentication.service';
+import { User } from '../core/models/user';
 
 @Component({
   selector: 'page-user',
@@ -13,7 +13,7 @@ import { AuthenticationService } from './services/authentication.service';
 })
 export class UserComponent implements OnInit{
 
-  user: FirebaseUserModel = new FirebaseUserModel();
+  user: User = new User();
   name:string;
 
   constructor(

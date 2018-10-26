@@ -8,3 +8,7 @@
 .ng-invalid.ng-dirty.ng-touched{
     @extend .is-invalid;
 }
+
+.invalid-feedback{
+    display:block;
+}
