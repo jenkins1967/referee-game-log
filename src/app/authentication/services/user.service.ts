@@ -1,40 +1,28 @@
 import { Injectable } from "@angular/core";
-import { AngularFirestore } from '@angular/fire/firestore';
+import { Resolve, ActivatedRouteSnapshot,  RouterStateSnapshot } from "@angular/router";
 import { AngularFireAuth } from '@angular/fire/auth';
 import * as firebase from 'firebase/app';
-import {BehaviorSubject } from "rxjs";
+import {BehaviorSubject,Subject, Observable, Observer } from "rxjs";
 import { User } from "src/app/core/models/user";
 
 @Injectable()
-export class UserService {
-  CurrentUser = new BehaviorSubject<User>(null);
-  constructor(
-   public db: AngularFirestore,
-   public afAuth: AngularFireAuth)
-   {
-     afAuth.user.subscribe((fbUser:firebase.User) =>{
-       if(fbUser){
-        const user = User.fromAuthUser(fbUser);
-        this.CurrentUser.next(user);
-       }
-       else{
-         this.CurrentUser.next(null);
-       }
-     })
+export class UserService implements Resolve<User> {
+  
+  currentUser = new Subject<User>();
+  constructor(public afAuth: AngularFireAuth)
+   {         
+      this.afAuth.authState.subscribe((fbUser:firebase.User) =>{
+        const newUser = fbUser ? User.fromAuthUser(fbUser):null;
+        this.currentUser.next(newUser);        
+      });
    }
 
-  getCurrentUser(){    
-    this.afAuth.user
-
-    return new Promise<any>((resolve, reject) => {
-      var user = firebase.auth().onAuthStateChanged(function(user){
-        if (user) {
-          resolve(user);
-        } else {
-          reject('No user logged in');
-        }
-      })
-    })
+  getCurrentUser():User|null{   
+    var fbUser = this.afAuth.auth.currentUser; 
+    if(fbUser){
+      return User.fromAuthUser(fbUser);
+    }
+    return null;    
   }
 
   updateCurrentUser(value){
@@ -47,6 +35,13 @@ export class UserService {
         resolve(res)
       }, err => reject(err))
     })
+  }
+
+  resolve(route: ActivatedRouteSnapshot, state:RouterStateSnapshot) : Observable<User> {
+    return Observable.create((obs:Observer<User>) =>{
+      obs.next(this.getCurrentUser());
+      obs.complete();      
+    });    
   }
 }
 

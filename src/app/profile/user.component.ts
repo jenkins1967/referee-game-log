@@ -2,9 +2,9 @@ import { Component, OnInit } from '@angular/core';
 import { ActivatedRoute } from '@angular/router';
 import { Location } from '@angular/common';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
-import { UserService } from './services/user.service';
-import { AuthenticationService } from './services/authentication.service';
+
 import { User } from '../core/models/user';
+import { UserService } from '../authentication/services/user.service';
 
 @Component({
   selector: 'page-user',
@@ -13,12 +13,11 @@ import { User } from '../core/models/user';
 })
 export class UserComponent implements OnInit{
 
-  user: User = new User();
+  user: User;
   name:string;
 
   constructor(
-    public userService: UserService,
-    public authService: AuthenticationService,
+    public userService: UserService,    
     private route: ActivatedRoute,
     private location : Location
   ) {
@@ -27,7 +26,7 @@ export class UserComponent implements OnInit{
 
   ngOnInit(): void {
     this.route.data.subscribe(routeData => {
-      let data = routeData['data'];
+      let data = routeData['user'];
       if (data) {
         this.user = data;
         console.log(this.user);
@@ -41,13 +40,5 @@ export class UserComponent implements OnInit{
       console.log(res);
     }, err => console.log(err))
   }
-
-  logout(){
-    this.authService.doLogout()
-    .then((res) => {
-      this.location.back();
-    }, (error) => {
-      console.log("Logout error", error);
-    });
-  }
+  
 }

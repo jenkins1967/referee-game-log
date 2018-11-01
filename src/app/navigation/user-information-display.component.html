@@ -1,6 +1,6 @@
-<div *ngIf="currentUser">
-  <a [routerLink]="['user']">
-    <img [src]="currentUser.image">
-    <span class="pl-1">{{currentUser.name}}</span>
+<span *ngIf="user">
+  <a [routerLink]="['profile']">
+    <img [src]="user.image">
+    <span class="pl-1">{{user.name}}</span>
   </a>
-</div>
+</span>

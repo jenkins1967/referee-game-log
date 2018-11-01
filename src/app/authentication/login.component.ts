@@ -11,10 +11,11 @@ import {FormGroup,  FormBuilder, Validators, FormControl} from '@angular/forms';
 })
 export class LoginComponent extends FormManagingComponent{
   actionName="Login";
-  errorMessage: string = '';
+  socialLoginError: string ;
+  emailLoginError:string;
   email:string;
   password:string;
-
+  afterLoginUrl = "games";
   constructor(
     public authService: AuthenticationService,
     private router: Router
@@ -27,35 +28,31 @@ export class LoginComponent extends FormManagingComponent{
   }
   
   tryFacebookLogin(){
-    this.authService.doFacebookLogin()
-    .then(res => {
-      this.router.navigate(['/user']);
-    })
+    this.handleLogin(this.authService.doFacebookLogin(), this.socialLoginError);    
   }
 
   tryTwitterLogin(){
-    this.authService.doTwitterLogin()
-    .then(res => {
-      this.router.navigate(['/user']);
-    })
+    this.handleLogin(this.authService.doTwitterLogin(), this.socialLoginError);    
   }
 
   tryGoogleLogin(){
-    this.authService.doGoogleLogin()
+    this.handleLogin(this.authService.doGoogleLogin(), this.socialLoginError);    
+  }
+
+  handleLogin(promise:Promise<any>, errorMessage:string){
+    promise
     .then(res => {
-      this.router.navigate(['/user']);
+      this.router.navigate([this.afterLoginUrl]);
+    })
+    .catch((reason) =>{
+      console.error("Login failed: " + reason);
+      errorMessage = reason;
     })
   }
 
   onSubmit(){
     if(this.myForm.valid){
-      this.authService.doLogin({email:this.email, password:this.password})
-      .then(res => {
-        this.router.navigate(['/user']);
-      }, err => {
-        console.log(err);
-        this.errorMessage = err.message;
-      })
+      this.handleLogin(this.authService.doLogin({email:this.email, password:this.password}), this.emailLoginError);      
     }
   }
 }

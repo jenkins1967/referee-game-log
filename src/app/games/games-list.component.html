@@ -1,3 +1,13 @@
-<p>
-  games-list works!
-</p>
+<table class="table table-striped">
+    <thead>
+      <tr>
+        <th scope="col">Scheduled Start</th>
+        
+      </tr>
+    </thead>
+    <tbody>
+        <tr *ngFor="let game of games">
+        <td>{{game.scheduledStart}}</td>
+        </tr>
+    </tbody>
+    </table>

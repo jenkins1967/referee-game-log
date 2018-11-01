@@ -1,4 +1,4 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, Input } from '@angular/core';
 import { UserService } from '../authentication/services/user.service';
 import { User } from '../core/models/user';
 
@@ -7,16 +7,8 @@ import { User } from '../core/models/user';
   templateUrl: './user-information-display.component.html',
   styleUrls: ['./user-information-display.component.scss']
 })
-export class UserInformationDisplayComponent implements OnInit {
+export class UserInformationDisplayComponent{
 
-  currentUser:User = null;
-  constructor(private userService:UserService) { }
-
-  ngOnInit() {
-    this.userService.CurrentUser.subscribe((user:User) =>{
-      this.currentUser = user;
-      
-    });
-  }
-
+  @Input() user:User = null;
+  
 }

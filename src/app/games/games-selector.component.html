@@ -1,0 +1,7 @@
+
+<h3 class="display-3">Upcoming Games</h3>
+<button type="button" (click)="create()" class="btn btn-primary">New</button>
+<app-games-list [games]="scheduledGames"></app-games-list>
+<h3 class="display-3">Past Games</h3>
+<app-games-list [games]="pastGames"></app-games-list>
+<button type="button" (click)="create()" class="btn btn-primary">New</button>

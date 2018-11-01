@@ -2,7 +2,7 @@ import { BrowserModule } from '@angular/platform-browser';
 import { NgModule } from '@angular/core';
 import {NgbModule} from '@ng-bootstrap/ng-bootstrap';
 import { AngularFireModule } from '@angular/fire';
-import { AngularFirestoreModule } from '@angular/fire/firestore';
+import { AngularFireDatabase, AngularFireDatabaseModule } from '@angular/fire/database';
 import {  AngularFireAuthModule } from '@angular/fire/auth';
 import { AppRoutingModule } from './app-routing.module';
 import { AppComponent } from './app.component';
@@ -15,6 +15,7 @@ import { environment } from '../environments/environment';
 import { AuthenticationModule } from './authentication/authentication.module';
 import { MainNavigationComponent } from './navigation/main-navigation.component';
 import { NavigationModule } from './navigation/navigation.module';
+import { ProfileModule } from './profile/profile.module';
 
 @NgModule({
   declarations: [
@@ -23,7 +24,7 @@ import { NavigationModule } from './navigation/navigation.module';
   imports: [
     BrowserModule,
     AngularFireModule.initializeApp(environment.firebase),    
-    AngularFirestoreModule, // imports firebase/firestore, only needed for database features
+    AngularFireDatabaseModule,
     AngularFireAuthModule,
     NgbModule,
     CoreModule,
@@ -33,9 +34,10 @@ import { NavigationModule } from './navigation/navigation.module';
     GoalsModule,
     MisconductModule,
     InjuriesModule,
+    ProfileModule,
     AppRoutingModule,
   ],
-  providers: [],
+  providers: [AngularFireDatabase],
   bootstrap: [AppComponent]
 })
 export class AppModule { }
