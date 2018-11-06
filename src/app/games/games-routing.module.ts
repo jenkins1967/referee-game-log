@@ -11,12 +11,11 @@ const routes: Routes = [
   {
     path:'games',
     component:GamesComponent,
+    canActivate: [AuthenticationGuard],
     children:[
       {
         path:'',
-        component:GamesSelectorComponent,
-        canActivate: [AuthenticationGuard],
-        resolve:{user:UserService}
+        component:GamesSelectorComponent        
       },
       {
         path:'new',

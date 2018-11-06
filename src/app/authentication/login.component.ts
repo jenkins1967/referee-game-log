@@ -46,7 +46,7 @@ export class LoginComponent extends FormManagingComponent{
     })
     .catch((reason) =>{
       console.error("Login failed: " + reason);
-      errorMessage = reason;
+      errorMessage = reason.message;
     })
   }
 

@@ -3,45 +3,72 @@ import { Resolve, ActivatedRouteSnapshot,  RouterStateSnapshot } from "@angular/
 import { AngularFireAuth } from '@angular/fire/auth';
 import * as firebase from 'firebase/app';
 import {BehaviorSubject,Subject, Observable, Observer } from "rxjs";
+import {map, take, tap} from "rxjs/operators";
 import { User } from "src/app/core/models/user";
 
 @Injectable()
 export class UserService implements Resolve<User> {
   
-  currentUser = new Subject<User>();
+  private fbUser:firebase.User;
+  private authUser:firebase.User;
+  currentUser:Subject<User>;
   constructor(public afAuth: AngularFireAuth)
-   {         
-      this.afAuth.authState.subscribe((fbUser:firebase.User) =>{
-        const newUser = fbUser ? User.fromAuthUser(fbUser):null;
-        this.currentUser.next(newUser);        
-      });
+   {        
+     this.currentUser = new Subject<User>();
+
+     this.afAuth.user.subscribe((fbUser:firebase.User) => {
+      this.fbUser = fbUser;
+      this.currentUser.next(fbUser ? User.fromAuthUser(fbUser):null);
+      console.log("fbUser now is " + fbUser);
+     });
+
+     this.afAuth.authState.subscribe((fbUser:firebase.User) =>{
+        this.authUser = fbUser;
+        console.log("auth user " + fbUser);
+
+     })
    }
 
-  getCurrentUser():User|null{   
-    var fbUser = this.afAuth.auth.currentUser; 
-    if(fbUser){
-      return User.fromAuthUser(fbUser);
-    }
-    return null;    
-  }
+   get authenticated():boolean{
+     return this.fbUser != null;
+   }
 
-  updateCurrentUser(value){
-    return new Promise<any>((resolve, reject) => {
-      var user = firebase.auth().currentUser;
-      user.updateProfile({
-        displayName: value.name,
-        photoURL: user.photoURL
-      }).then(res => {
-        resolve(res)
-      }, err => reject(err))
+   user() :Observable<User>{
+    return this.afAuth.authState.pipe(
+      take(1),
+      map((user:firebase.User) => {
+        if(user){
+          return User.fromAuthUser(user);
+        }
+        return null;
+      })
+  );
+  }
+   
+
+  getCurrentUser():Observable<User>{   
+    return Observable.create((obs:Observer<User>) =>{
+      this.afAuth.user.subscribe((fbUser:firebase.User) =>{
+        if(fbUser){
+          obs.next(User.fromAuthUser(fbUser));
+        }
+        else{
+          obs.error("No user logged in.");
+        }
+        obs.complete();
+      })
     })
   }
 
-  resolve(route: ActivatedRouteSnapshot, state:RouterStateSnapshot) : Observable<User> {
-    return Observable.create((obs:Observer<User>) =>{
-      obs.next(this.getCurrentUser());
-      obs.complete();      
-    });    
+  resolve(route: ActivatedRouteSnapshot, state:RouterStateSnapshot) : Observable<User|null> {
+     return this.afAuth.user.pipe(
+        map((fbUser:firebase.User) =>{
+          if(fbUser){
+            return User.fromAuthUser(fbUser);
+          }
+          return null;
+        })
+     );
   }
 }
 

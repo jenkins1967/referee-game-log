@@ -7,9 +7,13 @@ import { UserCredential, AuthProvider } from 'firebase/auth';
   providedIn: 'root'
 })
 export class AuthenticationService {
-
+  private fbUser:firebase.User;
   constructor(public afAuth: AngularFireAuth) {
+   
+  }
 
+  get authenticated():boolean{
+    return this.fbUser !== null;
   }
 
   doFacebookLogin() {
