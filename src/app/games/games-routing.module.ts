@@ -10,8 +10,9 @@ import { UserService } from '../authentication/services/user.service';
 const routes: Routes = [
   {
     path:'games',
-    component:GamesComponent,
+    component:GamesComponent,    
     canActivate: [AuthenticationGuard],
+    resolve:{user:UserService},
     children:[
       {
         path:'',

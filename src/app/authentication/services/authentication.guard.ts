@@ -17,21 +17,9 @@ export class AuthenticationGuard implements CanActivate {
     private router: Router
   ) { }
 
-  canActivate(): Observable<boolean> {
-    /*
-    return this.afAuth.authState.pipe(
-        take(1),
-        map(user => {
-          const state = user != null;
-          return state;
-        }),
-        tap(loggedIn =>{
-          if(!loggedIn){
-              this.router.navigate(["login"]);
-          }
-        })
-    );*/
-    return this.userService.user().pipe(
+  canActivate(): Promise<boolean> {
+
+   /*     return this.userService.user().pipe(
       take(1),
       map(user =>{
         return user != null;
@@ -42,5 +30,17 @@ export class AuthenticationGuard implements CanActivate {
         }
       })
     );
+  }*/
+  return this.userService.isAuthenticated().then((loggedIn:boolean) =>{
+    if(loggedIn) {
+      return true;
+    }    
+      this.router.navigate(["login"]);    
+      return false;
+    },
+    (reason) =>{
+      this.router.navigate(["login"]);  
+      return false;
+    })
   }
 }

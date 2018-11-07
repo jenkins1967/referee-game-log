@@ -29,6 +29,14 @@ export class UserService implements Resolve<User> {
      })
    }
 
+   get userToken():Promise<string>{
+     return new Promise<string>((resolve, reject) =>{
+       this.afAuth.idTokenResult.subscribe((tokenResult:firebase.auth.IdTokenResult) =>{
+          resolve(tokenResult.token);
+       });
+     });
+   }
+
    get authenticated():boolean{
      return this.fbUser != null;
    }
@@ -42,7 +50,21 @@ export class UserService implements Resolve<User> {
         }
         return null;
       })
-  );
+    );
+  }
+
+  isAuthenticated() :Promise<boolean>{
+    return new Promise<boolean>((resolve, reject) =>{
+      this.user().subscribe((value:User) =>{
+        if(value != null){
+          resolve(true);
+        }
+        else{
+          reject(false);
+        }
+      })
+    })
+    
   }
    
 
@@ -60,7 +82,18 @@ export class UserService implements Resolve<User> {
     })
   }
 
-  resolve(route: ActivatedRouteSnapshot, state:RouterStateSnapshot) : Observable<User|null> {
+  resolve(route: ActivatedRouteSnapshot, state:RouterStateSnapshot) : Promise<User|null> {
+    return new Promise<User>((resolve, reject) =>{
+      this.user().subscribe((value:User) =>{
+        if(value){
+          resolve(value);      
+        }
+        else{
+          reject(null);
+        }
+      })
+    });    
+    /*
      return this.afAuth.user.pipe(
         map((fbUser:firebase.User) =>{
           if(fbUser){
@@ -69,6 +102,7 @@ export class UserService implements Resolve<User> {
           return null;
         })
      );
+     */
   }
 }
 

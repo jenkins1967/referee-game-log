@@ -5,10 +5,26 @@
         <img class="card-img-top image" [src]="user.image" alt="Card image cap">
         <div *ngIf='user.provider != "password"'class="card-body">
           <h4 class="card-title">{{user.name}}</h4>
-          <p class="card-text">This is an example of Social Authentication using Firebase in an Angular 5 web app. </p>
-        </div>
-       
+          <ul>
+            <li>{{user.email}}</li>
+          </ul>
+        </div>               
       </div>
     </div>    
+  </div>
+  <div class="row">    
+    <div class="col-md-6 col-md-offset-3">     
+      <form [formGroup]="myForm" (ngSubmit)="onSubmit()">
+        <div class="form-group">
+          <label>Grade</label>
+          <input  type="text" formControlName="grade" class="form-control" />          
+        </div>
+        <div class="form-group">
+          <label>Profile</label>
+          <textarea class="form-control" formControlName="profile"></textarea>          
+        </div>
+        <button [disabled]="myForm.invalid" type="submit" class="btn btn-default">Save</button>        
+      </form>
+    </div>
   </div>
 </div>

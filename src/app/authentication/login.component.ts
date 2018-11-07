@@ -12,9 +12,7 @@ import {FormGroup,  FormBuilder, Validators, FormControl} from '@angular/forms';
 export class LoginComponent extends FormManagingComponent{
   actionName="Login";
   socialLoginError: string ;
-  emailLoginError:string;
-  email:string;
-  password:string;
+  emailLoginError:string;  
   afterLoginUrl = "games";
   constructor(
     public authService: AuthenticationService,
@@ -52,7 +50,11 @@ export class LoginComponent extends FormManagingComponent{
 
   onSubmit(){
     if(this.myForm.valid){
-      this.handleLogin(this.authService.doLogin({email:this.email, password:this.password}), this.emailLoginError);      
+      this.handleLogin(this.authService.doLogin(
+        {
+          email:this.myForm.value.email, 
+          password:this.myForm.value.password}), 
+          this.emailLoginError);      
     }
   }
 }

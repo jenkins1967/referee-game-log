@@ -16,6 +16,8 @@ import { AuthenticationModule } from './authentication/authentication.module';
 import { MainNavigationComponent } from './navigation/main-navigation.component';
 import { NavigationModule } from './navigation/navigation.module';
 import { ProfileModule } from './profile/profile.module';
+import { UserManagementService, FirebaseUserManagementService } from './core/services/user-management.service';
+import { HttpClientModule } from '@angular/common/http';
 
 @NgModule({
   declarations: [
@@ -28,6 +30,7 @@ import { ProfileModule } from './profile/profile.module';
     AngularFireAuthModule,
     NgbModule,
     CoreModule,
+    HttpClientModule,
     NavigationModule,
     AuthenticationModule,
     GamesModule,
@@ -37,7 +40,9 @@ import { ProfileModule } from './profile/profile.module';
     ProfileModule,
     AppRoutingModule,
   ],
-  providers: [AngularFireDatabase],
+  providers: [AngularFireDatabase, 
+    {provide:UserManagementService, useClass:FirebaseUserManagementService}
+  ],
   bootstrap: [AppComponent]
 })
 export class AppModule { }
