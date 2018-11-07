@@ -7,6 +7,9 @@ import { User } from '../core/models/user';
 import { UserService } from '../authentication/services/user.service';
 import { UserManagementService } from '../core/services/user-management.service';
 import { UserInfo } from '../core/models/userInfo';
+import * as moment from 'moment'; 
+import { ReferenceDataService } from '../core/services/reference-data.service';
+import { RefereeGrade } from '../core/models/referee-grade';
 
 @Component({
   selector: 'page-user',
@@ -19,15 +22,17 @@ export class UserComponent implements OnInit{
   name:string;
   myForm:FormGroup;
   submitting = false;
+  grades:Array<RefereeGrade>;
+
   constructor(
-    public userService: UserService,   
-    private userMgtService:UserManagementService, 
-    private route: ActivatedRoute,
-    private location : Location
+    private referenceDataService:ReferenceDataService,
+      private userMgtService:UserManagementService, 
+    private route: ActivatedRoute
   ) {
     this.myForm = new FormGroup({
       grade:new FormControl(''),
       profile:new FormControl(''),      
+      memberSince:new FormControl('')
     });
   }
 
@@ -38,10 +43,22 @@ export class UserComponent implements OnInit{
       this.userMgtService.getUser(this.user.uid).subscribe((userInfo) =>{
           if(userInfo != null){
             this.myForm.controls["grade"].setValue(userInfo.grade);
-            this.myForm.controls["profile"].setValue(userInfo.profile);            
+            this.myForm.controls["profile"].setValue(userInfo.profile);                                  
+            this.myForm.controls["memberSince"].setValue(moment.utc(userInfo.memberSinceTimestamp).toLocaleString());
           }
       });
+
+      this.referenceDataService.UssfRefereeGrades().subscribe((grades:Array<RefereeGrade>) =>{
+        this.grades = grades.sort((a, b) =>{
+          if(a > b){
+            return 1;
+          }
+          return -1;
+        });
+      })
     })
+
+
   }
 
   onSubmit(){

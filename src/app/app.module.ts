@@ -16,8 +16,11 @@ import { AuthenticationModule } from './authentication/authentication.module';
 import { MainNavigationComponent } from './navigation/main-navigation.component';
 import { NavigationModule } from './navigation/navigation.module';
 import { ProfileModule } from './profile/profile.module';
-import { UserManagementService, FirebaseUserManagementService } from './core/services/user-management.service';
+import { UserManagementService } from './core/services/user-management.service';
 import { HttpClientModule } from '@angular/common/http';
+import { FirebaseUserManagementService } from './core/services/firebase-user-management.service';
+import { ReferenceDataService } from './core/services/reference-data.service';
+import { FirebaseReferenceDataService } from './core/services/firebase-reference-data.service';
 
 @NgModule({
   declarations: [
@@ -41,7 +44,8 @@ import { HttpClientModule } from '@angular/common/http';
     AppRoutingModule,
   ],
   providers: [AngularFireDatabase, 
-    {provide:UserManagementService, useClass:FirebaseUserManagementService}
+    {provide:UserManagementService, useClass:FirebaseUserManagementService},
+    {provide:ReferenceDataService, useClass:FirebaseReferenceDataService}
   ],
   bootstrap: [AppComponent]
 })

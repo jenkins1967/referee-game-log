@@ -2,7 +2,7 @@ import { UserService } from "src/app/authentication/services/user.service";
 import { environment } from "src/environments/environment";
 
 export abstract class FirebaseBaseDataService{
-    constructor(private readonly userService:UserService){
+    constructor(protected readonly userService:UserService){
 
     }
 
@@ -14,3 +14,4 @@ export abstract class FirebaseBaseDataService{
         return this.userService.userToken;
     }
 }
+

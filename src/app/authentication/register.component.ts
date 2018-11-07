@@ -1,5 +1,5 @@
 
-import { Component } from '@angular/core';
+import { Component, OnInit } from '@angular/core';
 import { Router } from '@angular/router';
 import { AuthenticationService } from './services/authentication.service';
 import {FormGroup,  FormBuilder, Validators, FormControl} from '@angular/forms';
@@ -8,6 +8,7 @@ import { FormManagingComponent } from './form-managing-component';
 import { UserManagementService } from '../core/services/user-management.service';
 import { User } from '../core/models/user';
 import { UserInfo } from '../core/models/userInfo';
+import { UserService } from './services/user.service';
 
 
 @Component({
@@ -15,7 +16,7 @@ import { UserInfo } from '../core/models/userInfo';
   templateUrl: './register.component.html',
   styleUrls: ['./register.component.scss']
 })
-export class RegisterComponent extends FormManagingComponent {
+export class RegisterComponent extends FormManagingComponent implements OnInit {
   actionName = "Register";
   errorMessage: string = '';
   successMessage: string = ''; 
@@ -23,6 +24,7 @@ export class RegisterComponent extends FormManagingComponent {
   constructor(
     private authService: AuthenticationService,
     private userManagerService:UserManagementService,
+    private userService:UserService,
     private fb:FormBuilder,
     private router: Router) {
         super();
@@ -35,11 +37,20 @@ export class RegisterComponent extends FormManagingComponent {
    get controls(){
      return this.myForm.controls;
    }
+
+   ngOnInit(){
+     this.userService.currentUser.subscribe((user:User) =>{
+        if(user){
+          this.userManagerService.addUser(user);
+          this.router.navigate(['/profile']);
+        }
+     })
+   }
  
    tryFacebookLogin(){
      this.authService.doFacebookLogin()
      .then(res =>{
-       this.createUser(res);
+       
      }, err => console.log(err)
      )
    }
@@ -47,7 +58,7 @@ export class RegisterComponent extends FormManagingComponent {
    tryTwitterLogin(){
      this.authService.doTwitterLogin()
      .then(res =>{
-      this.createUser(res);
+      
      }, err => console.log(err)
      )
    }
@@ -55,17 +66,12 @@ export class RegisterComponent extends FormManagingComponent {
    tryGoogleLogin(){
      this.authService.doGoogleLogin()
      .then(res =>{
-      this.createUser(res);
+      
      }, err => console.log(err)
      )
    }
 
-   private createUser(res){
-     const user:User = User.fromAuthUser(res);
-     this.userManagerService.addUser(user).subscribe(() =>{
-        this.router.navigate(['/user']);
-     });       
-   }
+   
 
    onSubmit(){
      if(this.myForm.valid){
